@@ -6,7 +6,7 @@
 class Switch : public Device {
 public:
 	Switch(size_t address) : Device(address) {
-		this->type = "switch";
+		type_ = "switch";
 	}
 
 	virtual size_t calls() {
