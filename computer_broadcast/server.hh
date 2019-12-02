@@ -6,9 +6,9 @@
 class Server : public Device {
 public:
 	Server(string name, size_t address) : Device(address) {
-		this->type = "server";
-		this->name = name;
-		this->address = address;
+		type_ = "server";
+		name_ = name;
+		address_ = address;
 	}
 };
 
