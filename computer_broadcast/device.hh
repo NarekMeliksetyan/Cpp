@@ -5,78 +5,78 @@
 
 class Device {
 protected:
-	string	type;			// type of device:
-	string	name;			// name of server (for server)
-	size_t	calls;			// number of calls (for switch)
-	size_t	address;		// address
-	size_t	conn_nbr;		// number of connections
+	string	type_;			// type of device:
+	string	name_;			// name of server (for server)
+	size_t	calls_;			// number of calls (for switch)
+	size_t	address_;		// address
+	size_t	conn_nbr_;		// number of connections
 
-	vector<Device*>	connections;	// connections
+	vector<Device*>	connections_;	// connections
 
 public:
 	Device(size_t address) {
-		this->conn_nbr = 0;
-		this->type = "device";
-		this->address = address;
+		conn_nbr_ = 0;
+		type_ = "device";
+		address_ = address;
 	}
 
 	virtual ~Device() {
-		connections.clear();
+		connections_.clear();
 	}
 
-	virtual string get_type() {
-		return type;
+	virtual string type() {
+		return type_;
 	}
 
-	virtual size_t get_address() {
-		return address;
+	virtual size_t address() {
+		return address_;
 	}
 
-	virtual size_t get_conn_nbr() {
-		return conn_nbr;
+	virtual size_t conn_nbr() {
+		return conn_nbr_;
 	}
 
-	virtual vector<Device*> get_connections() {
-		return connections;
+	virtual vector<Device*> connections() {
+		return connections_;
 	}
 
-	virtual string get_name() {
-		return name;
+	virtual string name() {
+		return name_;
 	}
 
 	virtual void add_call() {
-		calls++;
+		calls_++;
 	}
 
 	virtual void connect(Device *devc) {
- 		connections.push_back(devc);
-		conn_nbr++;
+ 		connections_.push_back(devc);
+		conn_nbr_++;
 	}
 
 	virtual bool connected(Device *devc) {
-		for (auto conn : connections)
-			if (conn->get_address() == devc->get_address()) {
+		for (auto conn : connections_)
+			if (conn->address() == devc->address()) {
 				return true;
 			}
 		return false;
 	}
 
 	virtual void find_servers(Call *call, Answer *answer) {
-		call->insert(address);
-		for (auto conn : get_connections()) {
-			if (call->have(conn->get_address())) {
+		call->insert(address_);
+		for (auto conn : connections()) {
+			if (call->have(conn->address())) {
 				continue;
 			}
-			call->insert(conn->get_address());
-			if (conn->get_type() == "server") {
-				answer->insert(conn->get_name());
-				cout << " -> " << conn->get_name();
-			} else if (conn->get_type() == "computer") {
-				cout << " -> " << conn->get_address();
+			call->insert(conn->address());
+			if (conn->type() == "server") {
+				answer->insert(conn->name());
+				cout << " -> " << conn->name();
+			} else if (conn->type() == "computer") {
+				cout << " -> " << conn->address();
 				conn->find_servers(call, answer);
-			} else if (conn->get_type() == "switch") {
+			} else if (conn->type() == "switch") {
 				conn->add_call();
-				cout << " -> " << conn->get_address();
+				cout << " -> " << conn->address();
 				conn->find_servers(call, answer);
 			}
 		}

@@ -5,17 +5,17 @@
 
 class Call {
 private:
-	set<int>	checked;	// checked devices
+	set<int>	checked_;	// checked devices
 
 public:
 	Call() {}
 
 	virtual ~Call() {
-		checked.clear();
+		checked_.clear();
 	}
 
 	virtual bool have(size_t connection) {
-		if (checked.count(connection)) {
+		if (checked_.count(connection)) {
 			return true;
 		} else {
 			return false;
@@ -23,11 +23,11 @@ public:
 	}
 
 	virtual void insert(size_t connection) {
-		checked.insert(connection);
+		checked_.insert(connection);
 	}
 
 	virtual void clear() {
-		checked.clear();
+		checked_.clear();
 	}
 };
 

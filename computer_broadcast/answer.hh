@@ -5,17 +5,17 @@
 
 class Answer : public Call {
 private:
-	set<string>	servers;	// available servers
+	set<string>	servers_;	// available servers
 
 public:
 	Answer() : Call() {}
 
 	~Answer() {
-		servers.clear();
+		servers_.clear();
 	}
 
 	bool have(string serv) {
-		if (servers.count(serv)) {	
+		if (servers_.count(serv)) {	
 			return true;
 		} else {
 			return false;
@@ -23,15 +23,15 @@ public:
 	}
 
 	void insert(string serv) {
-		servers.insert(serv);
+		servers_.insert(serv);
 	}
 
 	void clear() {
-		servers.clear();
+		servers_.clear();
 	}
 
-	set<string> get_servers() {
-		return servers;
+	set<string> servers() {
+		return servers_;
 	}
 };
 

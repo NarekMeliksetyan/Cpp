@@ -9,8 +9,8 @@ public:
 		this->type = "switch";
 	}
 
-	virtual size_t get_calls() {
-		return calls;
+	virtual size_t calls() {
+		return calls_;
 	}
 };
 

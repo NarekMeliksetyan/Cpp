@@ -5,19 +5,19 @@
 
 class Computer : public Device {
 private:
-	set<string>	servers;	// available servers
+	set<string>	servers_;	// available servers
 
 public:
 	Computer(size_t address) : Device(address) {
-		this->type = "computer";
+		type_ = "computer";
 	}
 
 	void add_servers(set<string> servers) {
-		this->servers = servers;
+		servers_ = servers;
 	}
 
-	set<string> get_servers() {
-		return servers;
+	set<string> servers() {
+		return servers_;
 	}
 };
 

@@ -5,23 +5,23 @@ int main()
 	unique_ptr<Network> net(new Network(20, 10, 3, 1 , 4, 2));
 
 	cout << "Computers:" << endl;
-	for (auto comp : net->get_computers()) {
-		cout << comp->get_address();
-		comp->find_servers(net->get_call(), net->get_answer());
+	for (auto comp : net->computers()) {
+		cout << comp->address();
+		comp->find_servers(net->call(), net->answer());
 		cout << endl;
-		net->get_call()->clear();
-		net->get_answer()->clear();
+		net->call()->clear();
+		net->answer()->clear();
 	}
 	cout << endl;
 
 	cout << "Switches:" << endl;
-	for (auto swtch : net->get_switches()) {
-		cout << swtch->get_address() << ":";
-		for (auto conn : swtch->get_connections()) {
-			cout << " " << conn->get_address();
+	for (auto swtch : net->switches()) {
+		cout << swtch->address() << ":";
+		for (auto conn : swtch->connections()) {
+			cout << " " << conn->address();
 		}
-		cout << " - " << swtch->get_calls() << " call";
-		if (swtch->get_calls() > 1) {
+		cout << " - " << swtch->calls() << " call";
+		if (swtch->calls() > 1) {
 			cout << "s";
 		}
 		cout << endl;
@@ -29,10 +29,10 @@ int main()
 	cout << endl;
 
 	cout << "Servers:" << endl;
-	for (auto serv : net->get_servers()) {
-		cout << serv->get_name() << ":";
-		for (auto conn : serv->get_connections()) {
-			cout << " " << conn->get_address();
+	for (auto serv : net->servers()) {
+		cout << serv->name() << ":";
+		for (auto conn : serv->connections()) {
+			cout << " " << conn->address();
 		}
 		cout << endl;
 	}

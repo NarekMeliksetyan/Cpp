@@ -5,20 +5,20 @@
 
 class Network : public Device {
 private:
-	size_t		comp_nbr;			// number of computers
-	size_t		switch_nbr;			// number of switches
-	size_t		serv_nbr;			// number of srvers
-	size_t		comp_max_conn;		// max number of computer connections
-	size_t		swtch_max_conn;		// max number of switch connections
-	size_t		serv_max_conn;		// max number of server connections
+	size_t		comp_nbr_;			// number of computers
+	size_t		switch_nbr_;		// number of switches
+	size_t		serv_nbr_;			// number of srvers
+	size_t		comp_max_conn_;		// max number of computer connections
+	size_t		swtch_max_conn_;	// max number of switch connections
+	size_t		serv_max_conn_;		// max number of server connections
 
-	Call		*call;				// call to server
-	Answer		*answer;			// answer to call
+	Call		*call_;				// call to server
+	Answer		*answer_;			// answer to call
 
-	set<int>			checked;		// checked addresses during connection checking
-	vector<Computer*>	computers;		// computers in the network
-	vector<Switch*>		switches;		// swtiches in the network
-	vector<Server*>		servers;		// servers in the network
+	set<int>			checked_;		// checked addresses during connection checking
+	vector<Computer*>	computers_;		// computers in the network
+	vector<Switch*>		switches_;		// swtiches in the network
+	vector<Server*>		servers_;		// servers in the network
 
 public:
 	Network(
@@ -28,17 +28,17 @@ public:
 		size_t comp_max_conn,
 		size_t swtch_max_conn,
 		size_t serv_max_conn
-	) : Device(address) {
-		this->address = 0;
-		this->comp_nbr = comp_nbr;
-		this->switch_nbr = switch_nbr;
-		this->serv_nbr = serv_nbr;
-		this->comp_max_conn = comp_max_conn;
-		this->swtch_max_conn = swtch_max_conn;
-		this->serv_max_conn = serv_max_conn;
+	) : Device(address_) {
+		address_ = 0;
+		comp_nbr_ = comp_nbr;
+		switch_nbr_ = switch_nbr;
+		serv_nbr_ = serv_nbr;
+		comp_max_conn_ = comp_max_conn;
+		swtch_max_conn_ = swtch_max_conn;
+		serv_max_conn_ = serv_max_conn;
 
-		this->call = new Call();
-		this->answer = new Answer();
+		call_ = new Call();
+		answer_ = new Answer();
 
 		init_devices();
 		random_connect();
@@ -46,77 +46,77 @@ public:
 	}
 
 	~Network() {
-		for (size_t i = 0; i < comp_nbr; i++) {
-			delete computers[i];
+		for (size_t i = 0; i < comp_nbr_; i++) {
+			delete computers_[i];
 		}
-		for (size_t i = 0; i < switch_nbr; i++) {
-			delete switches[i];
+		for (size_t i = 0; i < switch_nbr_; i++) {
+			delete switches_[i];
 		}
-		for (size_t i = 0; i < serv_nbr; i++) {
-			delete servers[i];
+		for (size_t i = 0; i < serv_nbr_; i++) {
+			delete servers_[i];
 		}
 
-		delete call;
-		delete answer;
+		delete call_;
+		delete answer_;
 	}
 
 	void init_devices() {
 		size_t i = 0;
 		vector<string> names = {"tiktok", "faceapp", "snapchat"};
 
-		while (computers.size() < comp_nbr) {
-			Computer *comp = new Computer(address++);
-			computers.push_back(comp);
+		while (computers_.size() < comp_nbr_) {
+			Computer *comp = new Computer(address_++);
+			computers_.push_back(comp);
 		}
-		while (switches.size() < switch_nbr) {
-			Switch *swtch = new Switch(address++);
-			switches.push_back(swtch);
+		while (switches_.size() < switch_nbr_) {
+			Switch *swtch = new Switch(address_++);
+			switches_.push_back(swtch);
 		}
-		while (servers.size() < serv_nbr) {
+		while (servers_.size() < serv_nbr_) {
 			string name;
 
 			if (i < 3) {
-				servers.push_back(new Server(names[i], address++));
+				servers_.push_back(new Server(names[i], address_++));
 			} else {
 				cout << "Enter server name: ";
 				cin >> name;
-				servers.push_back(new Server(name, address++));
+				servers_.push_back(new Server(name, address_++));
 			}
 			i++;
 		}
 		cout << endl;
 	}
 
-	size_t get_comp_nbr() {
-		return comp_nbr;
+	size_t comp_nbr() {
+		return comp_nbr_;
 	}
 
-	size_t get_switch_nbr() {
-		return switch_nbr;
+	size_t switch_nbr() {
+		return switch_nbr_;
 	}
 
-	size_t get_serv_nbr() {
-		return serv_nbr;
+	size_t serv_nbr() {
+		return serv_nbr_;
 	}
 
-	vector<Computer*> get_computers() {
-		return computers;
+	vector<Computer*> computers() {
+		return computers_;
 	}
 
-	vector<Switch*> get_switches() {
-		return switches;
+	vector<Switch*> switches() {
+		return switches_;
 	}
 
-	vector<Server*> get_servers() {
-		return servers;
+	vector<Server*> servers() {
+		return servers_;
 	}
 
-	Call *get_call() {
-		return call;
+	Call *call() {
+		return call_;
 	}
 
-	Answer *get_answer() {
-		return answer;
+	Answer *answer() {
+		return answer_;
 	}
 
 	void connect(Device *devc1, Device *devc2) {
@@ -128,16 +128,16 @@ public:
 		cout << "Computers: ";
 		size_t i = 0;
 
-		for (auto comp : get_computers()) {
+		for (auto comp : computers_) {
 			cout << ".";
-			if (comp->get_conn_nbr() >= comp_max_conn) {
+			if (comp->conn_nbr() >= comp_max_conn_) {
 				continue;
 			}
-			i = rand() % switch_nbr;
-			while (switches[i]->get_conn_nbr() >= swtch_max_conn - 1) {
-				i = rand() % switch_nbr;
+			i = rand() % switch_nbr_;
+			while (switches_[i]->conn_nbr() >= swtch_max_conn_ - 1) {
+				i = rand() % switch_nbr_;
 			}
-			connect(comp, switches[i]);
+			connect(comp, switches_[i]);
 		}
 		cout << " connected" << endl;
 	}
@@ -146,17 +146,17 @@ public:
 		cout << "Switches ";
 		size_t j = 0;
 
-		for (size_t i = 0; i < switch_nbr; i++) {
+		for (size_t i = 0; i < switch_nbr_; i++) {
 			cout << ".";
-			if (switches[i]->get_conn_nbr() >= swtch_max_conn) {
+			if (switches_[i]->conn_nbr() >= swtch_max_conn_) {
 				continue;
 			}
-			j = rand() % switch_nbr;
-			while (i == j || switches[i]->connected(switches[j])
-			|| switches[j]->get_conn_nbr() >= swtch_max_conn) {
-				j = rand() % switch_nbr;
+			j = rand() % switch_nbr_;
+			while (i == j || switches_[i]->connected(switches_[j])
+			|| switches_[j]->conn_nbr() >= swtch_max_conn_) {
+				j = rand() % switch_nbr_;
 			}
-			connect(switches[i], switches[j]);
+			connect(switches_[i], switches_[j]);
 		}
 		cout << " connected" << endl;
 	}
@@ -165,18 +165,18 @@ public:
 		cout << "Servers ";
 		size_t i = 0;
 
-		for (auto serv : servers) {
+		for (auto serv : servers_) {
 			cout << ".";
-			if (serv->get_conn_nbr() >= serv_max_conn) {
+			if (serv->conn_nbr() >= serv_max_conn_) {
 				continue;
 			}
-			while (serv->get_conn_nbr() < serv_max_conn) {
-				i = rand() % switch_nbr;
-				while (serv->connected(switches[i])
-				|| switches[i]->get_conn_nbr() >= 1) {
-					i = rand() % switch_nbr;
+			while (serv->conn_nbr() < serv_max_conn_) {
+				i = rand() % switch_nbr_;
+				while (serv->connected(switches_[i])
+				|| switches_[i]->conn_nbr() >= 1) {
+					i = rand() % switch_nbr_;
 				}
-				connect(serv, switches[i]);
+				connect(serv, switches_[i]);
 			}
 		}
 		cout << " connected" << endl;
