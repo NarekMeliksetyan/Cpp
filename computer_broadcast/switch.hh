@@ -9,6 +9,7 @@ private:
 
 public:
 	Switch(size_t address) : Device(address) {
+		calls_ = 0;
 	}
 
 	virtual size_t calls() {

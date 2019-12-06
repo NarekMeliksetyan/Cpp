@@ -5,12 +5,12 @@
 
 class Network : public Device {
 private:
-	size_t		comp_nbr_;			// number of computers
-	size_t		switch_nbr_;		// number of switches
-	size_t		serv_nbr_;			// number of srvers
-	size_t		comp_max_conn_;		// max number of computer connections
-	size_t		swtch_max_conn_;	// max number of switch connections
-	size_t		serv_max_conn_;		// max number of server connections
+	size_t		comp_nbr_;				// number of computers
+	size_t		switch_nbr_;			// number of switches
+	size_t		serv_nbr_;				// number of srvers
+	size_t		comp_max_conn_;			// max number of computer connections
+	size_t		swtch_max_conn_;		// max number of switch connections
+	size_t		serv_max_conn_;			// max number of server connections
 
 	set<int>			checked_;		// checked addresses during connection checking
 	vector<Computer*>	computers_;		// computers in the network
