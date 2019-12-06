@@ -21,7 +21,6 @@ public:
 		call->insert(address_);
 		answer->insert(name_);
 		cout << " -> " << name_;
-		cout << " -> " << address_;
 	}
 };
 

@@ -22,11 +22,11 @@ public:
 	virtual void find_servers(Call *call, Answer *answer) {
 		call->insert(address_);
 		add_call();
-		cout << " -> " << address_;
 		for (auto conn : connections()) {
 			if (call->have(conn->address())) {
 				continue;
 			}
+			cout << " -> " << conn->address();
 			call->insert(conn->address());
 			conn->find_servers(call, answer);
 		}

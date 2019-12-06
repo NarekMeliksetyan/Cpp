@@ -5,9 +5,8 @@
 
 class Device {
 protected:
-	size_t	address_;		// address
-	size_t	conn_nbr_;		// number of connections
-
+	size_t	address_;				// address
+	size_t	conn_nbr_;				// number of connections
 	vector<Device*>	connections_;	// connections
 
 public:
