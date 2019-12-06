@@ -12,9 +12,6 @@ private:
 	size_t		swtch_max_conn_;	// max number of switch connections
 	size_t		serv_max_conn_;		// max number of server connections
 
-	Call		*call_;				// call to server
-	Answer		*answer_;			// answer to call
-
 	set<int>			checked_;		// checked addresses during connection checking
 	vector<Computer*>	computers_;		// computers in the network
 	vector<Switch*>		switches_;		// swtiches in the network
@@ -37,12 +34,8 @@ public:
 		swtch_max_conn_ = swtch_max_conn;
 		serv_max_conn_ = serv_max_conn;
 
-		call_ = new Call();
-		answer_ = new Answer();
-
 		init_devices();
 		random_connect();
-//		find_servers();
 	}
 
 	~Network() {
@@ -55,9 +48,6 @@ public:
 		for (size_t i = 0; i < serv_nbr_; i++) {
 			delete servers_[i];
 		}
-
-		delete call_;
-		delete answer_;
 	}
 
 	void init_devices() {
@@ -109,14 +99,6 @@ public:
 
 	vector<Server*> servers() {
 		return servers_;
-	}
-
-	Call *call() {
-		return call_;
-	}
-
-	Answer *answer() {
-		return answer_;
 	}
 
 	void connect(Device *devc1, Device *devc2) {

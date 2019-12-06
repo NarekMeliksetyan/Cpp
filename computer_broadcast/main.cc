@@ -2,15 +2,17 @@
 
 int main()
 {
+	auto call = make_unique<Call>();
+	auto answer = make_unique<Answer>();
 	unique_ptr<Network> net(new Network(20, 10, 3, 1 , 4, 2));
 
 	cout << "Computers:" << endl;
 	for (auto comp : net->computers()) {
 		cout << comp->address();
-		comp->find_servers(net->call(), net->answer());
+		comp->find_servers(call.get(), answer.get());
 		cout << endl;
-		net->call()->clear();
-		net->answer()->clear();
+		call->clear();
+		answer->clear();
 	}
 	cout << endl;
 
