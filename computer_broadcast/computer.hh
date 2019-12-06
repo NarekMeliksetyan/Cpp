@@ -9,11 +9,22 @@ private:
 
 public:
 	Computer(size_t address) : Device(address) {
-		type_ = "computer";
 	}
 
 	void add_servers(set<string> servers) {
 		servers_ = servers;
+	}
+
+	void find_servers(Call *call, Answer *answer) {
+		call->insert(address_);
+		cout << " -> " << address_;
+		for (auto conn : connections()) {
+			if (call->have(conn->address())) {
+				continue;
+			}
+			call->insert(conn->address());
+			conn->find_servers(call, answer);
+		}
 	}
 
 	set<string> servers() {
