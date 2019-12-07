@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#include "group.hh"
 #include "student.hh"
+#include "group.hh"
 
 #endif

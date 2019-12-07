@@ -7,16 +7,28 @@ class Student {
 protected:
 	int			av_;		// average mark
 	size_t		id_;		// student's id
-	string		name_;		// first name
-	string  	lname_;		// last name
+	string		name_;		// student's name
 	vector<int>	marks_;		// stident's marks
 
 public:
-	Student(size_t id, string name, string lname) {
+	Student(size_t id) {
 		av_ = 0;
 		id_ = id;
-		name_ = name;
-		lname_ = lname;
+		init_student();
+	}
+
+	size_t id() {
+		return id_;
+	}
+
+	string name() {
+		return name_;
+	}
+
+	void init_student() {
+		cout << "Student's name:" << endl;
+		cin >> name_;
+		add_marks();
 	}
 
 	int av() {
@@ -34,18 +46,6 @@ public:
 		return av_;
 	}
 
-	size_t id() {
-		return id_;
-	}
-	
-	string name() {
-		return name_;
-	}
-
-	string lname() {
-		return lname_;
-	}
-
 	void add_mark(int mark) {
 		if (mark >= 2 && mark <= 5) {
 			marks_.push_back(mark);
@@ -54,15 +54,17 @@ public:
 		}
 	}
 
-	void add_marks(int n) {
+	void add_marks() {
 		int mark = 0;
 
-		for (int i = 0; i < n; i++) {
-			cin >> mark;
+		cout << "Enter marks or enter 0 to stop:" << endl;
+		cin >> mark;
+
+		while (mark) {
 			add_mark(mark);
+			cin >> mark;
 		}
 	}
-
 };
 
 #endif
