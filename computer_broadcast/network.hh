@@ -5,17 +5,17 @@
 
 class Network : public Device {
 private:
-	size_t		comp_nbr_;				// number of computers
-	size_t		switch_nbr_;			// number of switches
-	size_t		serv_nbr_;				// number of srvers
-	size_t		comp_max_conn_;			// max number of computer connections
-	size_t		swtch_max_conn_;		// max number of switch connections
-	size_t		serv_max_conn_;			// max number of server connections
+	size_t			comp_nbr_;				// number of computers
+	size_t			switch_nbr_;			// number of switches
+	size_t			serv_nbr_;				// number of srvers
+	size_t			comp_max_conn_;			// max number of computer connections
+	size_t			swtch_max_conn_;		// max number of switch connections
+	size_t			serv_max_conn_;			// max number of server connections
+	set<int>		checked_;				// checked addresses during connection checking
 
-	set<int>			checked_;		// checked addresses during connection checking
-	vector<Computer*>	computers_;		// computers in the network
-	vector<Switch*>		switches_;		// swtiches in the network
-	vector<Server*>		servers_;		// servers in the network
+	vector<unique_ptr<Computer>>	computers_;		// computers in the network
+	vector<unique_ptr<Switch>>		switches_;		// swtiches in the network
+	vector<unique_ptr<Server>>		servers_;		// servers in the network
 
 public:
 	Network(
@@ -38,39 +38,29 @@ public:
 		random_connect();
 	}
 
-	~Network() {
-		for (size_t i = 0; i < comp_nbr_; i++) {
-			delete computers_[i];
-		}
-		for (size_t i = 0; i < switch_nbr_; i++) {
-			delete switches_[i];
-		}
-		for (size_t i = 0; i < serv_nbr_; i++) {
-			delete servers_[i];
-		}
-	}
-
 	void init_devices() {
 		size_t i = 0;
 		vector<string> names = {"tiktok", "faceapp", "snapchat"};
 
 		while (computers_.size() < comp_nbr_) {
-			Computer *comp = new Computer(address_++);
+			unique_ptr<Computer> comp(new Computer(address_++));
 			computers_.push_back(comp);
 		}
 		while (switches_.size() < switch_nbr_) {
-			Switch *swtch = new Switch(address_++);
+			unique_ptr<Switch> swtch(new Switch(address_++));
 			switches_.push_back(swtch);
 		}
 		while (servers_.size() < serv_nbr_) {
 			string name;
 
 			if (i < 3) {
-				servers_.push_back(new Server(names[i], address_++));
+				unique_ptr<Server> serv(new Server(names[i], address_++));
+				servers_.push_back(serv);
 			} else {
 				cout << "Enter server name: ";
 				cin >> name;
-				servers_.push_back(new Server(name, address_++));
+				unique_ptr<Server> serv(new Server(names[i], address_++));
+				servers_.push_back(serv);
 			}
 			i++;
 		}
@@ -89,15 +79,15 @@ public:
 		return serv_nbr_;
 	}
 
-	vector<Computer*> computers() {
+	vector<unique_ptr<Computer>> computers() {
 		return computers_;
 	}
 
-	vector<Switch*> switches() {
+	vector<unique_ptr<Switch>> switches() {
 		return switches_;
 	}
 
-	vector<Server*> servers() {
+	vector<unique_ptr<Server>> servers() {
 		return servers_;
 	}
 
