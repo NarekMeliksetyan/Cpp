@@ -52,7 +52,6 @@ public:
 		}
 		while (servers_.size() < serv_nbr_) {
 			string name;
-
 			if (i < 3) {
 				unique_ptr<Server> serv(new Server(names[i], address_++));
 				servers_.push_back(serv);
@@ -91,6 +90,18 @@ public:
 		return servers_;
 	}
 
+	unique_ptr<Computer> computer(size_t i) {
+		return computers()[i];
+	}
+
+	unique_ptr<Switch> swtch(size_t i) {
+		return switches()[i];
+	}
+
+	unique_ptr<Server> server(size_t i) {
+		return servers()[i];
+	}
+
 	void connect(Device *devc1, Device *devc2) {
 		devc1->connect(devc2);
 		devc2->connect(devc1);
@@ -100,16 +111,16 @@ public:
 		cout << "Computers: ";
 		size_t i = 0;
 
-		for (auto comp : computers_) {
+		for (auto comp : computers()) {
 			cout << ".";
 			if (comp->conn_nbr() >= comp_max_conn_) {
 				continue;
 			}
 			i = rand() % switch_nbr_;
-			while (switches_[i]->conn_nbr() >= swtch_max_conn_ - 1) {
+			while (swtch(i)->conn_nbr() >= swtch_max_conn_ - 1) {
 				i = rand() % switch_nbr_;
 			}
-			connect(comp, switches_[i]);
+			connect(comp, swtch(i);
 		}
 		cout << " connected" << endl;
 	}
@@ -120,15 +131,15 @@ public:
 
 		for (size_t i = 0; i < switch_nbr_; i++) {
 			cout << ".";
-			if (switches_[i]->conn_nbr() >= swtch_max_conn_) {
+			if (swtch(i)->conn_nbr() >= swtch_max_conn_) {
 				continue;
 			}
 			j = rand() % switch_nbr_;
-			while (i == j || switches_[i]->connected(switches_[j])
-			|| switches_[j]->conn_nbr() >= swtch_max_conn_) {
+			while (i == j || swtch(i)->connected(swtch(j))
+			|| swtch(j)->conn_nbr() >= swtch_max_conn_) {
 				j = rand() % switch_nbr_;
 			}
-			connect(switches_[i], switches_[j]);
+			connect(swtch(i), swtch(j);
 		}
 		cout << " connected" << endl;
 	}
@@ -137,18 +148,18 @@ public:
 		cout << "Servers ";
 		size_t i = 0;
 
-		for (auto serv : servers_) {
+		for (auto serv : servers()) {
 			cout << ".";
 			if (serv->conn_nbr() >= serv_max_conn_) {
 				continue;
 			}
 			while (serv->conn_nbr() < serv_max_conn_) {
 				i = rand() % switch_nbr_;
-				while (serv->connected(switches_[i])
-				|| switches_[i]->conn_nbr() >= 1) {
+				while (serv->connected(swtch(i))
+				|| swtch(i)->conn_nbr() >= 1) {
 					i = rand() % switch_nbr_;
 				}
-				connect(serv, switches_[i]);
+				connect(serv, swtch(i));
 			}
 		}
 		cout << " connected" << endl;
