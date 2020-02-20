@@ -14,7 +14,7 @@ using namespace std;
 #include "device.hh"
 #include "switch.hh"
 #include "server.hh"
-#include "computer.hh"
 #include "network.hh"
+#include "computer.hh"
 
 #endif

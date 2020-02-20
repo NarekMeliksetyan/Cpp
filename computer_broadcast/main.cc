@@ -2,9 +2,9 @@
 
 int main()
 {
-	auto call = make_unique<Call>();
-	auto answer = make_unique<Answer>();
-	unique_ptr<Network> net(new Network(20, 10, 3, 1 , 4, 2));
+	auto call = make_shared<Call>();
+	auto answer = make_shared<Answer>();
+	shared_ptr<Network> net(new Network(20, 10, 3, 1 , 4, 2));
 
 	cout << "Computers:" << endl;
 	for (auto comp : net->computers()) {
