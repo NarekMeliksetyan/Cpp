@@ -1,16 +1,17 @@
-#ifndef SERVER_HH
-#define SERVER_HH
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Server : public Device {
 private:
-	string	name_;			// name of server
+	string	name_;
 
 public:
 	Server(string name, size_t address) : Device(address) {
 		name_ = name;
-		address_ = address;
+		address = address;
 	}
 
 	string name() {

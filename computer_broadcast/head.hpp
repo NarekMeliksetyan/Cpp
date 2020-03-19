@@ -1,7 +1,5 @@
-#ifndef HEAD_HH
-#define HEAD_HH
-
-using namespace std;
+#ifndef HEAD_HPP
+#define HEAD_HPP
 
 #include <set>
 #include <vector>
@@ -9,12 +7,12 @@ using namespace std;
 #include <memory>
 #include <iostream>
 
-#include "call.hh"
-#include "answer.hh"
-#include "device.hh"
-#include "switch.hh"
-#include "server.hh"
-#include "network.hh"
-#include "computer.hh"
+#include "call.hpp"
+#include "answer.hpp"
+#include "device.hpp"
+#include "switch.hpp"
+#include "server.hpp"
+#include "computer.hpp"
+#include "network.hpp"
 
 #endif

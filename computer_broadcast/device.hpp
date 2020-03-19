@@ -1,17 +1,18 @@
-#ifndef DEVICE_HH
-#define DEVICE_HH
+#ifndef DEVICE_HPP
+#define DEVICE_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Device {
 protected:
-	size_t	address_;				// address
-	size_t	conn_nbr_;				// number of connections
-	vector<Device*>	connections_;	// connections
+	size_t	address_;
+	size_t	connNbr_;
+	vector<Device*>	connections_;
 
 public:
 	Device(size_t address) {
-		conn_nbr_ = 0;
+		connNbr_ = 0;
 		address_ = address;
 	}
 
@@ -23,8 +24,8 @@ public:
 		return address_;
 	}
 
-	virtual size_t conn_nbr() {
-		return conn_nbr_;
+	virtual size_t connNbr() {
+		return connNbr_;
 	}
 
 	virtual vector<Device*> connections() {
@@ -33,7 +34,7 @@ public:
 
 	virtual void connect(Device *devc) {
  		connections_.push_back(devc);
-		conn_nbr_++;
+		connNbr_++;
 	}
 
 	virtual bool connected(Device *devc) {
@@ -44,7 +45,7 @@ public:
 		return false;
 	}
 
-	virtual void find_servers(Call *call, Answer *answer) {}
+	virtual void findServers(Call *call, Answer *answer) {}
 };
 
 #endif

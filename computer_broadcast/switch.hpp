@@ -1,11 +1,12 @@
 #ifndef SWITCH_HPP
 #define SWITCH_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Switch : public Device {
 private:
-	size_t	calls_;			// number of calls
+	size_t	calls_;
 
 public:
 	Switch(size_t address) : Device(address) {
@@ -29,7 +30,7 @@ public:
 			}
 			cout << " -> " << conn->address();
 			call->insert(conn->address());
-			conn->find_servers(call, answer);
+			conn->findServers(call, answer);
 		}
 	}
 };

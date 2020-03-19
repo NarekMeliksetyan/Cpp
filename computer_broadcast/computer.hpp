@@ -1,12 +1,12 @@
-#ifndef COMPUTER_HH
-#define COMPUTER_HH
+#ifndef COMPUTER_HPP
+#define COMPUTER_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Computer : public Device {
 public:
-	Computer(size_t address) : Device(address) {
-	}
+	Computer(size_t address) : Device(address) {}
 
 	void find_servers(Call *call, Answer *answer) {
 		call->insert(address_);
@@ -16,7 +16,7 @@ public:
 			}
 			cout << " -> " << conn->address();
 			call->insert(conn->address());
-			conn->find_servers(call, answer);
+			conn->findServers(call, answer);
 		}
 	}
 };

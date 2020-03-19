@@ -1,11 +1,12 @@
-#ifndef CALL_HH
-#define CALL_HH
+#ifndef CALL_HPP
+#define CALL_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Call {
 private:
-	set<int>	checked_;	// checked devices
+	set<int>	checked_;
 
 public:
 	Call() {}

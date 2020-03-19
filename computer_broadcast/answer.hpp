@@ -1,11 +1,12 @@
-#ifndef ANSWER_HH
-#define ANSWER_HH
+#ifndef ANSWER_HPP
+#define ANSWER_HPP
 
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 class Answer : public Call {
 private:
-	set<string>	servers_;	// available servers
+	set<string>	servers_;
 
 public:
 	Answer() : Call() {}

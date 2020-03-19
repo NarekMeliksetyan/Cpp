@@ -1,18 +1,17 @@
-#include "head.hh"
+#include "head.hpp"
+using namespace std;
 
 int main()
 {
-	auto call = make_shared<Call>();
-	auto answer = make_shared<Answer>();
-	shared_ptr<Network> net(new Network(20, 10, 3, 1 , 4, 2));
+	Network *net = new Network(20, 10, 3, 1 , 4, 2);
 
 	cout << "Computers:" << endl;
 	for (auto comp : net->computers()) {
 		cout << comp->address();
-		comp->find_servers(call.get(), answer.get());
+		comp->find_servers(net->call(), net->ans());
 		cout << endl;
-		call->clear();
-		answer->clear();
+		net->call()->clear();
+		net->ans()->clear();
 	}
 	cout << endl;
 
@@ -40,5 +39,6 @@ int main()
 	}
 	cout << endl;
 
+	delete net;
 	return 0;
 }
