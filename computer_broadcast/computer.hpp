@@ -2,7 +2,6 @@
 #define COMPUTER_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Computer : public Device {
 public:

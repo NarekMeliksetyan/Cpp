@@ -2,7 +2,6 @@
 #define ANSWER_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Answer : public Call {
 private:

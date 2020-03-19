@@ -2,7 +2,6 @@
 #define CALL_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Call {
 private:

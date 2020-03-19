@@ -2,7 +2,6 @@
 #define SWITCH_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Switch : public Device {
 private:

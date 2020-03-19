@@ -2,7 +2,6 @@
 #define SERVER_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Server : public Device {
 private:

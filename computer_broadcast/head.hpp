@@ -7,6 +7,8 @@
 #include <memory>
 #include <iostream>
 
+using namespace std;
+
 #include "call.hpp"
 #include "answer.hpp"
 #include "device.hpp"

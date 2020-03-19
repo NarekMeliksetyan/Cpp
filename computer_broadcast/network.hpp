@@ -2,7 +2,6 @@
 #define NETW0RK_HPP
 
 #include "head.hpp"
-using namespace std;
 
 class Network : public Device {
 private:
