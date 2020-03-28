@@ -1,105 +1,91 @@
 /*
-Условие:
-	Однажды, разбирая старые книги на чердаке, школьник Вася
-	нашёл англо-латинский словарь. Английский он к тому времени
-	знал в совершенстве, и его мечтой было изучить латынь.
-	Поэтому попавшийся словарь был как раз кстати.
-	К сожалению, для полноценного изучения языка недостаточно
-	только одного словаря: кроме англо-латинского необходим
-	латинско-английский. За неимением лучшего он решил сделать
-	второй словарь из первого.
-	Как известно, словарь состоит из переводимых слов,
-	к каждому из которых приводится несколько слов-переводов.
-	Для каждого латинского слова, встречающегося где-либо в словаре,
-	Вася предлагает найти все его переводы (то есть все
-	английские слова, для которых наше латинское встречалось в
-	его списке переводов), и считать их и только их переводами
-	этого латинского слова.
-	Помогите Васе выполнить работу по созданию
-	латинско-английского словаря из англо-латинского.
-Входные данные:
-	В первой строке содержится единственное целое число N — количество
-	английских слов в словаре. Далее следует N описаний.
-	Каждое описание содержится в отдельной строке, в которой записано
-	сначала английское слово, затем отделённый пробелами дефис
-	(символ номер 45), затем разделённые запятыми с пробелами переводы
-	этого английского слова на латинский. Переводы отсортированы
-	в лексикографическом порядке. Порядок следования английских слов
-	в словаре также лексикографический.
-	Все слова состоят только из маленьких латинских букв,
-	длина каждого слова не превосходит 15 символов.
-	Общее количество слов на входе не превышает 100000.
-Выходные данные:
-	В первой строке программа должна вывести количество слов
-	в соответствующем данному латинско-английском словаре.
-	Со второй строки выведите сам словарь, в точности соблюдая
-	формат входных данных. В частности, первым должен идти перевод
-	лексикографически минимального латинского слова, далее — второго
-	в этом порядке и т.д. Внутри перевода английские слова
-	должны быть также отсортированы лексикографически.
+ * Условие:
+ *	По данной непустой строке 𝑠 длины не более 10^4, состоящей из строчных
+ *	букв латинского алфавита, постройте оптимальный беспрефиксный код.
+ *	В первой строке выведите количество различных букв 𝑘,
+ *	встречающихся в строке, и размер получившейся закодированной строки.
+ *	В следующих 𝑘 строках запишите коды букв в формате "letter: code".
+ *	В последней строке выведите закодированную строку.
 */
 
 #include <iostream>
-#include <map>
-#include <vector>
 #include <string>
+#include <unordered_map>
+#include <queue>
+#include <list>
+#include <memory>
 
 using namespace std;
 
-vector <string> get_translate() {
-	const char delim = ',';
-	vector <string> v;
-	string tr;
+struct Node {
+	Node(char ch, unsigned int freq,
+		shared_ptr<Node> left_node = nullptr,
+		shared_ptr<Node> right_node = nullptr
+	)
+	: frequency(freq), letter(ch), left(left_node), right(right_node) {}
 
-	int prev_pos = 0, pos = 0;
-	getline(cin, tr);
+	shared_ptr<Node> left;
+	shared_ptr<Node> right;
+	const unsigned int frequency;
+	const char letter;
 
-	while ((pos = tr.find(delim, prev_pos)) != string::npos) {
-		v.push_back(tr.substr(prev_pos, pos - prev_pos));
-		prev_pos = pos + 2;
+	struct CompareNode {
+		bool operator() (const shared_ptr<Node> &e1, const shared_ptr<Node> &e2) const {
+			return e1->frequency > e2->frequency;
+		}
+	};
+};
+
+void make_code_table(const shared_ptr<Node> &node,
+	unordered_map<char, string> &map, string path = string()) {
+	if (node->letter != 0) {
+		map.insert(pair<char, string>(node->letter, path));
+		return;
 	}
-	v.push_back(tr.substr(prev_pos, tr.size() - prev_pos));
-	return v;
-}
-
-map <string, vector<string>>& fill_map(map<string, vector<string>>& m, int n) {
-	string s;
-	char delim;
-	for (int i = 0; i < n; ++i) {
-		cin >> s >> delim;
-		cin.get();
-		m[s] = get_translate();
-	}
-	return m;
-}
-
-map <string, vector<string>> eng_to_lat(const map<string, vector<string>>& m) {
-	map<string, vector<string>> temp;
-
-	for (map<string, vector<string>>::const_iterator it = m.begin(); it != m.end(); it++)
-		for (int i = 0; i < it->second.size(); ++i)
-			temp[it->second[i]].push_back(it->first);
-	return temp;
+	make_code_table(node->left, map, path + "0");
+	make_code_table(node->right, map, path + "1");
 }
 
 int main() {
-	int n;
-	cin >> n;
-	map <string, vector<string>> eng_lat;
-	map <string, vector<string>> lat_eng;
-	
-	eng_lat = fill_map(eng_lat, n);
-	lat_eng = eng_to_lat(eng_lat);
-	cout << lat_eng.size() << endl;
-
-	for (map <string, vector <string>>::const_iterator it = lat_eng.begin(); it != lat_eng.end(); it++) {
-		cout << it->first << " - ";
-		for (int i = 0; i < it->second.size(); i++) {
-			cout << it->second[i];
-			if (i + 1 < it->second.size())
-				cout << ", ";
-		}
-		cout << endl;
+	string line;
+	getline(cin, line);
+	unordered_map<char, unsigned int> character_map;
+	for (auto ch : line) {
+		if (character_map.find(ch) != character_map.end())
+			++character_map.at(ch);
+		else
+			character_map.insert(pair<char, unsigned int>(ch, 1));
 	}
+
+	priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareNode> letters;
+	for (auto elem : character_map) {
+		auto node = make_shared<Node>(Node(elem.first, elem.second));
+		letters.push(node);
+	}
+	while (letters.size() > 1) {
+		auto node1 = make_shared<Node>(*letters.top()); letters.pop();
+		auto node2 = make_shared<Node>(*letters.top()); letters.pop();
+		if (node1->frequency < node2->frequency) {
+			auto new_node = Node(0, node1->frequency + node2->frequency, node1, node2);
+			auto node = make_shared<Node>(new_node);
+			letters.push(node);
+		} else {
+			auto new_node = Node(0, node1->frequency + node2->frequency, node2, node1);
+			auto node = make_shared<Node>(new_node);
+			letters.push(node);
+		}
+	}
+	unordered_map<char, string> haffman_map;
+	if (character_map.size() == 1)
+		haffman_map.insert(pair<char, string>((*character_map.begin()).first, "1"));
+	else
+		make_code_table(letters.top(), haffman_map);
+	string code_string;
+	for (auto ch : line)
+		code_string += haffman_map.at(ch);
+	cout << haffman_map.size() << " " << code_string.length() << endl;
+	for (auto elem : haffman_map)
+		cout << elem.first << ": " << elem.second << endl;
+	cout << code_string << endl;
 	return 0;
 }
