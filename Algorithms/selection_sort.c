@@ -1,6 +1,7 @@
 /*
-** Selection sort
-*/
+ * Сортировка выбором
+ * Selection sort
+ */
 
 void	swap(int *a, int *b)
 {

@@ -1,6 +1,7 @@
 /*
-** Bubble sort
-*/
+ * Сортировка пузырьком
+ * Bubble sort
+ */
 
 void	swap(int *a, int *b)
 {

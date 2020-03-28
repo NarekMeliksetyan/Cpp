@@ -1,5 +1,6 @@
 /*
-** Insertion sort
+ * Сортировка вставками
+ * Insertion sort
 */
 
 void	insertion_sort(int *arr, int n)

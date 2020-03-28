@@ -1,6 +1,7 @@
 /*
-** Qiuck sort
-*/
+ * Быстрая сортировка
+ * Qiuck sort
+ */
 
 void	swap(int *a, int *b)
 {

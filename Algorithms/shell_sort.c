@@ -1,3 +1,8 @@
+/*
+ * Сортировка Шелла
+ * Shell sort
+ */
+
 void	swap(int *a, int *b)
 {
 	int temp = *a;
