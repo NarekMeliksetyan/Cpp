@@ -3,6 +3,7 @@
  * Insertion sort
 */
 
+
 void    insertion_sort(int *arr, int n)
 {
     int j = 0;

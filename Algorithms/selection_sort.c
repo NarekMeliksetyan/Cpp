@@ -3,12 +3,14 @@
  * Selection sort
  */
 
+
 void    swap(int *a, int *b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
+
 
 void    selection_sort(int *arr, int n)
 {
