@@ -3,28 +3,35 @@
 
 #include "head.hpp"
 
-class Switch : public Device {
+class Switch : public Device
+{
 private:
-    size_t    calls_;
+    size_t calls_;
 
 public:
-    Switch(size_t address) : Device(address) {
+    Switch(size_t address) : Device(address)
+    {
         calls_ = 0;
     }
 
-    virtual size_t calls() {
+    virtual size_t calls()
+    {
         return calls_;
     }
 
-    void add_call() {
+    void add_call()
+    {
         calls_++;
     }
 
-    virtual void find_servers(Call *call, Answer *answer) {
+    virtual void find_servers(Call *call, Answer *answer)
+    {
         call->insert(address_);
         add_call();
-        for (auto conn : connections()) {
-            if (call->have(conn->address())) {
+        for (auto conn : connections())
+        {
+            if (call->have(conn->address()))
+            {
                 continue;
             }
             cout << " -> " << conn->address();
@@ -35,4 +42,3 @@ public:
 };
 
 #endif
- 

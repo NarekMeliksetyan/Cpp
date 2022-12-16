@@ -3,34 +3,43 @@
 
 #include "head.hpp"
 
-class Answer : public Call {
+class Answer : public Call
+{
 private:
-    set<string>    servers_;
+    set<string> servers_;
 
 public:
     Answer() : Call() {}
 
-    ~Answer() {
+    ~Answer()
+    {
         servers_.clear();
     }
 
-    bool have(string serv) {
-        if (servers_.count(serv)) {    
+    bool have(string serv)
+    {
+        if (servers_.count(serv))
+        {
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    void insert(string serv) {
+    void insert(string serv)
+    {
         servers_.insert(serv);
     }
 
-    void clear() {
+    void clear()
+    {
         servers_.clear();
     }
 
-    set<string> servers() {
+    set<string> servers()
+    {
         return servers_;
     }
 };

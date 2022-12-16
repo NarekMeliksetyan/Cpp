@@ -3,30 +3,38 @@
 
 #include "head.hpp"
 
-class Call {
+class Call
+{
 private:
-    set<int>    checked_;
+    set<int> checked_;
 
 public:
     Call() {}
 
-    virtual ~Call() {
+    virtual ~Call()
+    {
         checked_.clear();
     }
 
-    virtual bool have(size_t connection) {
-        if (checked_.count(connection)) {
+    virtual bool have(size_t connection)
+    {
+        if (checked_.count(connection))
+        {
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    virtual void insert(size_t connection) {
+    virtual void insert(size_t connection)
+    {
         checked_.insert(connection);
     }
 
-    virtual void clear() {
+    virtual void clear()
+    {
         checked_.clear();
     }
 };
