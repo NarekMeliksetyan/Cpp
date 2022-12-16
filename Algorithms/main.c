@@ -1,19 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int *scan_array(int);
+void print_array(int *, int);
 
-int     *scan_array(int);
-void    print_array(int*, int);
+void bubble_sort(int *, int);
+void heap_sort(int *, int);
+void insertion_sort(int *, int);
+void quick_sort(int *, int, int);
+void selection_sort(int *, int);
+void shell_sort(int *, int);
 
-void    bubble_sort(int*, int);
-void    heap_sort(int*, int);
-void    insertion_sort(int*, int);
-void    quick_sort(int*, int, int);
-void    selection_sort(int*, int);
-void    shell_sort(int*, int);
-
-
-int     main()
+int main()
 {
     int n;
     int *arr;
@@ -22,15 +20,15 @@ int     main()
     scanf("%d", &n);
     arr = scan_array(n);
 
-//
-//    Uncomment an algorithm to use:
-//
-//    bubble_sort(arr, n);
+    //
+    //    Uncomment an algorithm to use:
+    //
+    //    bubble_sort(arr, n);
     heap_sort(arr, n);
-//    insertion_sort(arr, n);
-//    quick_sort(arr, 0, n);
-//    selection_sort(arr, n);
-//    shell_sort(arr, n);
+    //    insertion_sort(arr, n);
+    //    quick_sort(arr, 0, n);
+    //    selection_sort(arr, n);
+    //    shell_sort(arr, n);
 
     printf("\nSorted array:\n");
     print_array(arr, n);
@@ -39,8 +37,7 @@ int     main()
     return (0);
 }
 
-
-int     *scan_array(int n)
+int *scan_array(int n)
 {
     int *arr;
     arr = malloc(sizeof(int) * n);
@@ -54,8 +51,7 @@ int     *scan_array(int n)
     return (arr);
 }
 
-
-void    print_array(int *arr, int n)
+void print_array(int *arr, int n)
 {
     for (int i = 0; i < n; i++)
         printf("%d ", arr[i]);

@@ -3,16 +3,14 @@
  * Qiuck sort
  */
 
-
-void    swap(int *a, int *b)
+void swap(int *a, int *b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-
-int     partition(int *arr, int low, int high)
+int partition(int *arr, int low, int high)
 {
     int i = low;
     int pivot = arr[high];
@@ -30,8 +28,7 @@ int     partition(int *arr, int low, int high)
     return (i);
 }
 
-
-void    quick_sort(int *arr, int low, int high)
+void quick_sort(int *arr, int low, int high)
 {
     if (low < high)
     {

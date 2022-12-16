@@ -1,10 +1,9 @@
 /*
  * Сортировка вставками
  * Insertion sort
-*/
+ */
 
-
-void    insertion_sort(int *arr, int n)
+void insertion_sort(int *arr, int n)
 {
     int j = 0;
     int key = 0;

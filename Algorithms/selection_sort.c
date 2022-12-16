@@ -3,16 +3,14 @@
  * Selection sort
  */
 
-
-void    swap(int *a, int *b)
+void swap(int *a, int *b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-
-void    selection_sort(int *arr, int n)
+void selection_sort(int *arr, int n)
 {
     for (int i = 1; i < n; i++)
     {
