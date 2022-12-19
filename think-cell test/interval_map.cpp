@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 {
 	std::cout << "example test:" << std::endl;
 	interval_map<int, char> M{'A'};
-	M.assign(1, 3, 'B');;
+	M.assign(1, 3, 'B');
 	M.print_map();
 	std::cout << std::endl;
 
