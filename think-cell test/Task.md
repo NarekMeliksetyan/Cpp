@@ -5,11 +5,11 @@
 
 `interval_map<K, V>` is implemented on top of `std::map`. For more information on `std::map`, you may refer to [cppreference.com](https://en.cppreference.com/w/cpp/container/map).
 
-Each key-value-pair (k,v) in `interval_map<K,V>::m_map` means that the value *v* is associated with all keys from *k* (including) to the next key (excluding) in `m_map`. The member `interval_map<K,V>::m_valBegin` holds the value that is associated with all keys less than the first key in m_map.
+Each key-value-pair *(k,v)* in `interval_map<K,V>::m_map` means that the value *v* is associated with all keys from *k* (including) to the next key (excluding) in `m_map`. The member `interval_map<K,V>::m_valBegin` holds the value that is associated with all keys less than the first key in `m_map`.
 
 Example: Let *M* be an instance of `interval_map<int,char>` where
 
-`M.m_valBegin=='A'`,
+`M.m_valBegin=='A'`,<br>
 `M.m_map=={ (1,'B'), (3,'A') }`,
 
 Then *M* represents the mapping
@@ -36,7 +36,7 @@ The representation in the `std::map` must be canonical, that is, consecutive map
 - besides being copyable and assignable, is equality-comparable via `operator==`, and
 - does not implement any other operations.
 
-You are given the following source code:
+### You are given the following source code:
 
 ```c++
 #include <map>
