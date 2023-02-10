@@ -20,11 +20,11 @@ int main()
     scanf("%d", &n);
     arr = scan_array(n);
 
-    //
-    //    Uncomment an algorithm to use:
-    //
+    /*
+    Uncomment an algorithm to use:
+    */
     //    bubble_sort(arr, n);
-    heap_sort(arr, n);
+    //    heap_sort(arr, n);
     //    insertion_sort(arr, n);
     //    quick_sort(arr, 0, n);
     //    selection_sort(arr, n);
