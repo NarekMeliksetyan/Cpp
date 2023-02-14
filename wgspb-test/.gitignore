@@ -1,0 +1,11 @@
+
+# Visual Studio
+*.user
+*.opendb
+*.db
+
+Debug/
+Release/
+
+# Visual Studio Code
+.vs/
