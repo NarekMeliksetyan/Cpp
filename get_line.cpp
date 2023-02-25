@@ -1,10 +1,10 @@
 #include <iostream>
 
-char *resize(const char *str, unsigned size, unsigned new_size)
+char *resize(const char *str, size_t size, size_t new_size)
 {
     char *new_str = new char[new_size];
 
-    for (int i = 0; i < size && i < new_size; i++)
+    for (size_t i = 0; i < size && i < new_size; i++)
         new_str[i] = str[i];
 
     delete[] str;
@@ -13,8 +13,8 @@ char *resize(const char *str, unsigned size, unsigned new_size)
 
 char *getline()
 {
-    const unsigned BUFFER = 64;
-    unsigned i = 0, size = BUFFER;
+    const size_t BUFF_SIZE = 64;
+    size_t i = 0, size = BUFF_SIZE;
 
     char c;
     char *str = new char[size];
@@ -22,7 +22,7 @@ char *getline()
     {
         if (i == size)
         {
-            size += BUFFER;
+            size += BUFF_SIZE;
             str = resize(str, i, size);
         }
         str[i++] = c;
