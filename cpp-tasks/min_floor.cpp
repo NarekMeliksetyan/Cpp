@@ -31,7 +31,8 @@ using namespace std;
 int sum(int);
 int min(int);
 
-int main() {
+int main()
+{
     int n;
     cout << "Enter the hight of the building: ";
     cin >> n;
@@ -40,15 +41,17 @@ int main() {
     return 0;
 }
 
-int sum(int n) {
+int sum(int n)
+{
     if (n == 0)
         return 0;
     return n + sum(n - 1);
 }
 
-int min(int n) {
+int min(int n)
+{
     int i = 1;
-    while (sum(i) < n) 
+    while (sum(i) < n)
         i++;
     return i;
 }

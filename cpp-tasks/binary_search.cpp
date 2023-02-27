@@ -14,13 +14,15 @@
 
 using namespace std;
 
-int bin_search(int val, vector<int> &mas) {
+int bin_search(int val, vector<int> &mas)
+{
     int l = 0;
     int r = mas.size() - 1;
 
     if (val > mas.at(r))
         return -1;
-    while (l <= r) {
+    while (l <= r)
+    {
         int m = l + (r - l) / 2;
         unsigned int elem = mas.at(m);
         if (elem == val)
@@ -39,7 +41,8 @@ int main()
     cin >> num_count;
     vector<int> mas;
 
-    while (num_count-- > 0) {
+    while (num_count-- > 0)
+    {
         int val = 0;
         cin >> val;
         mas.push_back(val);
@@ -47,7 +50,8 @@ int main()
     cin >> num_count;
     vector<int> nums_to_seach;
 
-    while (num_count-- > 0) {
+    while (num_count-- > 0)
+    {
         int val = 0;
         cin >> val;
         nums_to_seach.push_back(val);

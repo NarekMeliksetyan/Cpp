@@ -16,11 +16,12 @@
 #include <iostream>
 
 using namespace std;
- 
-bool IsSafePos(int*, int, int, int);
-void backtracking(int, int&, int, int*);
 
-int main() {
+bool IsSafePos(int *, int, int, int);
+void backtracking(int, int &, int, int *);
+
+int main()
+{
     int n, count = 0;
     cout << "Enter n: ";
     cin >> n;
@@ -30,7 +31,7 @@ int main() {
         board[i] = 0;
 
     backtracking(0, count, n, board);
-    
+
     if (count == 0)
         cout << "There is no solution.";
     else if (count == 1)
@@ -39,11 +40,12 @@ int main() {
         cout << "There are " << count << " solutions.";
     cout << endl;
 
-    delete []board;
+    delete[] board;
     return 0;
 }
 
-bool IsSafePos(int *board, int k, int y, int N) {
+bool IsSafePos(int *board, int k, int y, int N)
+{
     int i = 0;
     while (i < k && y != board[i] && abs(k - i) != abs(y - board[i]))
         i++;
@@ -52,11 +54,14 @@ bool IsSafePos(int *board, int k, int y, int N) {
     else
         return false;
 }
- 
-void backtracking(int k, int &count, int N, int *board) {
+
+void backtracking(int k, int &count, int N, int *board)
+{
     int i, y;
-    for (y = 0; y < N; y++) {
-        if (IsSafePos(board, k, y, N)) {
+    for (y = 0; y < N; y++)
+    {
+        if (IsSafePos(board, k, y, N))
+        {
             board[k] = y;
             if (k == N - 1)
                 count++;

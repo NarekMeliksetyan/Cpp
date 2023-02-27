@@ -17,27 +17,33 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
     unsigned int items_count, bag_volume;
     cin >> items_count >> bag_volume;
     list<pair<int, int>> items;
-    for (size_t i = 0; i < items_count; i++) {
+    for (size_t i = 0; i < items_count; i++)
+    {
         int cost = 0, volume = 0;
         cin >> cost >> volume;
         items.push_back(make_pair(cost, volume));
     }
-    items.sort([](const pair<int, int> &a, const pair<int, int> &b) {
-        return (((double)a.first) / ((double)a.second)) >(((double)b.first) / ((double)b.second));});
+    items.sort([](const pair<int, int> &a, const pair<int, int> &b)
+               { return (((double)a.first) / ((double)a.second)) > (((double)b.first) / ((double)b.second)); });
     double bag_cost = 0.0;
-    while (bag_volume > 0) {
+    while (bag_volume > 0)
+    {
         if (items.empty())
             break;
         unsigned int item_cost = (*items.begin()).first;
         unsigned int item_volume = (*items.begin()).second;
-        if (bag_volume < item_volume) {
+        if (bag_volume < item_volume)
+        {
             bag_cost += ((double)bag_volume) * ((double)item_cost) / ((double)item_volume);
             bag_volume = 0;
-        } else {
+        }
+        else
+        {
             bag_cost += (double)item_cost;
             bag_volume -= item_volume;
             items.pop_front();

@@ -6,7 +6,7 @@
  *    встречающихся в строке, и размер получившейся закодированной строки.
  *    В следующих 𝑘 строках запишите коды букв в формате "letter: code".
  *    В последней строке выведите закодированную строку.
-*/
+ */
 
 #include <iostream>
 #include <string>
@@ -17,28 +17,32 @@
 
 using namespace std;
 
-struct Node {
+struct Node
+{
     Node(char ch, unsigned int freq,
-        shared_ptr<Node> left_node = nullptr,
-        shared_ptr<Node> right_node = nullptr
-    )
-    : frequency(freq), letter(ch), left(left_node), right(right_node) {}
+         shared_ptr<Node> left_node = nullptr,
+         shared_ptr<Node> right_node = nullptr)
+        : frequency(freq), letter(ch), left(left_node), right(right_node) {}
 
     shared_ptr<Node> left;
     shared_ptr<Node> right;
     const unsigned int frequency;
     const char letter;
 
-    struct CompareNode {
-        bool operator() (const shared_ptr<Node> &e1, const shared_ptr<Node> &e2) const {
+    struct CompareNode
+    {
+        bool operator()(const shared_ptr<Node> &e1, const shared_ptr<Node> &e2) const
+        {
             return e1->frequency > e2->frequency;
         }
     };
 };
 
 void make_code_table(const shared_ptr<Node> &node,
-    unordered_map<char, string> &map, string path = string()) {
-    if (node->letter != 0) {
+                     unordered_map<char, string> &map, string path = string())
+{
+    if (node->letter != 0)
+    {
         map.insert(pair<char, string>(node->letter, path));
         return;
     }
@@ -46,11 +50,13 @@ void make_code_table(const shared_ptr<Node> &node,
     make_code_table(node->right, map, path + "1");
 }
 
-int main() {
+int main()
+{
     string line;
     getline(cin, line);
     unordered_map<char, unsigned int> character_map;
-    for (auto ch : line) {
+    for (auto ch : line)
+    {
         if (character_map.find(ch) != character_map.end())
             ++character_map.at(ch);
         else
@@ -58,18 +64,25 @@ int main() {
     }
 
     priority_queue<shared_ptr<Node>, vector<shared_ptr<Node>>, Node::CompareNode> letters;
-    for (auto elem : character_map) {
+    for (auto elem : character_map)
+    {
         auto node = make_shared<Node>(Node(elem.first, elem.second));
         letters.push(node);
     }
-    while (letters.size() > 1) {
-        auto node1 = make_shared<Node>(*letters.top()); letters.pop();
-        auto node2 = make_shared<Node>(*letters.top()); letters.pop();
-        if (node1->frequency < node2->frequency) {
+    while (letters.size() > 1)
+    {
+        auto node1 = make_shared<Node>(*letters.top());
+        letters.pop();
+        auto node2 = make_shared<Node>(*letters.top());
+        letters.pop();
+        if (node1->frequency < node2->frequency)
+        {
             auto new_node = Node(0, node1->frequency + node2->frequency, node1, node2);
             auto node = make_shared<Node>(new_node);
             letters.push(node);
-        } else {
+        }
+        else
+        {
             auto new_node = Node(0, node1->frequency + node2->frequency, node2, node1);
             auto node = make_shared<Node>(new_node);
             letters.push(node);
