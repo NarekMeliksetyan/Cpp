@@ -1,0 +1,5 @@
+echo "Для получения IP вопрользуемся nslookup:"
+echo "nslookup 42.fr | grep \"Address\" | grep -v \"#\" | awk '{print \$2}'"
+echo ""
+echo "163.172.250.12"
+echo "163.172.250.13"

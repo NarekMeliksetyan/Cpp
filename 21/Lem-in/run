@@ -1,0 +1,62 @@
+#!/bin/bash
+
+if [ -z $1 ]; then
+	perl -E 'say "\033[31m"'
+	echo "usage: empty parameter"
+	echo "use -h or --help to get help"
+	perl -e 'print "\033[0m"'
+	exit 0
+fi
+
+case $1 in
+	"-h" | "--help")
+		perl -E 'say "\033[36m"'
+		echo "-h | --help"
+		echo "	get help message"
+		echo "-r | --run <map>"
+		echo "	run <map>"
+		echo "-l | --leaks <map>"
+		echo "	check leaks <map>"
+		echo "-v | --vis <map>"
+		echo "	visualize <map>"
+		echo "-n | --norm"
+		echo "	check norminette"
+	;;
+	"-r" | "--run")
+		make
+		if [ -z $2 ]; then
+			./lem-in < maps/map3
+		else
+			./lem-in < $2
+		fi
+	;;
+	"-l" | "--leaks")
+		make
+		if [ -z $2 ]; then
+			valgrind --log-file=VALGRINDED --leak-check=full ./lem-in < maps/map3
+		else
+			valgrind --log-file=VALGRINDED --leak-check=full ./lem-in < $2
+		fi
+	;;
+	"-v" | "--vis")
+		make
+		if [ -z $2 ]; then
+			./lem-in < maps/map3 | python3 ./visualize/vis.py
+		else
+			./lem-in < $2 | python3 ./visualize/vis.py
+		fi
+	;;
+	"-n" | "norm")
+		make fclean
+		norminette srcs/
+		norminette incs/
+		norminette libft/
+	;;
+	*)
+		perl -E 'say "\033[31m"'
+		echo "usage: unknown parameter"
+		echo "use -h or --help to get help"
+	;;
+esac
+
+exit 0

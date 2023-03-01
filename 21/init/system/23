@@ -1,0 +1,2 @@
+echo "ssh: ssh username@ip затем ввести пароль"
+echo "graphic: Ввести свой логин и пароль при входе через VM"

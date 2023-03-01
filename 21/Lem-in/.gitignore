@@ -1,0 +1,14 @@
+.DS_Store
+*/.DS_Store
+*/*/.DS_Store
+
+.vscode
+*/.vscode
+
+Lem-in/lem-in
+Lem-in/libft/libft.a
+Lem-in/libft/objs/
+Lem-in/objs/
+
+Lem-in/visualize/__pycache__
+Lem-in/visualize/__pycache__/*

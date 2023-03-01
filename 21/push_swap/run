@@ -1,0 +1,49 @@
+#!/bin/bash
+
+if [ -z $1 ]; then
+	perl -E 'say "\033[31m"'
+	echo "Empty parameter"
+	exit 0
+fi
+
+case $1 in
+	"-t")
+		sh test.sh -full 1 100 50
+	;;
+	"-n")
+		norminette libft/inc/
+		norminette libft/src/
+		norminette inc/
+		norminette src/
+	;;
+	"-v")
+		./push_swap $2 | ./checker -v $2
+	;;
+	"-g")
+		valgrind ./push_swap $@ | ./checker $2
+	;;
+	"-r")
+		./push_swap 10 9 8 7 6 5 4 3 2 1 | ./checker -v 10 9 8 7 6 5 4 3 2 1
+	;;
+	"-m")
+		./push_swap -5 4 -3 2 -1 1 -2 3 -4 5 \
+		| ./checker -5 4 -3 2 -1 1 -2 3 -4 5
+	;;
+	"-mv" | "-vm")
+		./push_swap -5 4 -3 2 -1 1 -2 3 -4 5 \
+		| ./checker -v -5 4 -3 2 -1 1 -2 3 -4 5
+	;;
+	"-rm")
+		./push_swap 5 4 3 2 1 -1 -2 -3 -4 -5 \
+		| ./checker -v 5 4 3 2 1 -1 -2 -3 -4 -5
+	;;
+	"-py")
+		python3 viz.py `ruby -e "puts (-200..200).to_a.shuffle.join(' ')"`
+	;;
+	*)
+		./push_swap $@ | ./checker $@
+	;;
+esac
+
+perl -E 'say "\033[0m"'
+exit 0

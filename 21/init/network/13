@@ -1,0 +1,6 @@
+echo "sh 12 | nslookup"
+
+echo "Server:		192.168.50.2"
+echo "Address:	192.168.50.2#53"
+echo ""
+echo "121.23.168.192.in-addr.arpa	name = mi-s3.21-school.ru."

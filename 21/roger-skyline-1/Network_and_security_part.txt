@@ -1,0 +1,380 @@
+apt-get updateiphttp://rus-linux.net/MyLDP/vm/VirtualBox-networking.html - здесь про NAT и Host-only
+маска сети \30 = 255.255.255.252 Почему? --> https://habr.com/ru/post/314484/
+1. Размер диска 8 гигов. Хотя бы 1 раздел - 4.2гига.
+Чтобы получить 4.2 гига выделяем на 5%больше = 4.5г
+
+apt-get update -y && apt-get upgrade -y - скачивание и установка обновлений
+
+2. Скачиваем sudo
+su
+apt-get install sudo
+adduser emaveric sudo
+groups emaveric - проверка что добавилось в группу sudo
+перезагружаем систему
+
+3. We don’t want you to use the DHCP service of your machine. You’ve got to
+configure it to have a static IP and a Netmask in \30.
+https://losst.ru/kak-zadat-ip-adres-v-linux
+https://serveradmin.ru/nastroyka-seti-v-debian/
+ip route show - просмотр адреса шлюза (10.0.2.2)
+broadcast - 10.0.2.255
+редактируем файл /etc/network/interfaces
+https://www.aitishnik.ru/nastroyka-seti-v-debian-9.html
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug enp0s3 -  перезапуск интерфейса при падении
+auto enp0s3 - запуск интерфейса при включении системы
+iface enp0s3 inet static - меняем dhcp на static
+address 10.0.2.1
+netmask 255.255.255.252
+gateway 10.0.2.2
+
+# The second network interface - интерфейс для SSH
+allow-hotplug enp0s8
+auto enp0s8
+iface enp0s8 inet static
+address 192.168.56.2
+netmask 255.255.255.252
+Перезагружаем сеть: sudo service network restart
+
+4.You have to change the default port of the SSH service by the one of your choice.
+SSH access HAS TO be done with publickeys. SSH root access SHOULD NOT
+be allowed directly, but with a user who can be root.
+
+4.1. Изменим порт ssh
+В файле /etc/ssh/sshd_config
+изменяем след строки:
+- Port 22
++ Port 2222
+PermitRootLogin no - авторизация под рутом через SSH
+Обязательно незабыть раскомментить строку (удалить '#')
+sudo service ssh restart
+Проверить подключение: ssh emaveric@192.168.56.2 -p2222
+4.2 Setup SSH access with publickeys.
+Cгенерируем public/private ключи rsa (не на виртуалке, а на маке):
+ssh-keygen -t rsa
+passphrase: 12345
+
+олучилось 2 файла в папке /Users/emaveric/.ssh : id_rsa - private key
+id_rsa.pub - public key (надо пеернести на сервер)
+ssh-copy-id -i id_rsa.pub [логин]@[ip для ssh 192.168...] -p[2222]
+
+Изменить в файле /etc/ssh/sshd_config  строки:
+PasswordAuthentication no - авторизация без пароля
+ и удалить '#'
+
+Очень долго у меня не работало подключение по ключам, заработало когда решила посмотреть:
+ssh -vvv account@your-ip -p
+
+5. You have to set the rules of your firewall on your server only with the services used outside the VM.(SSH, http, https)
+
+sudo iptables -L - просмотр правил файрвола
+http://blog.sedicomm.com/2018/07/06/kak-nastroit-brandmauer-ufw-na-ubuntu-i-debian/
+
+UFW (Uncomplicated Firewall) – это интерфейс iptables, предназначенный для упрощения процесса настройки брандмауэра. 
+
+sudo apt-get install ufw
+sudo ufw status
+Если неактивен - sudo ufw enable
+ufw default deny incoming - запретить входящее соединение
+ufw default allow outgoing - разрешить исходящие подключения
+По умолчанию брандмауэр UFW отклоняет все входящие соединения и разрешает только исходящие подключения к серверу. Это означает, что никто не может получить доступ к вашему серверу, если только вы специально не открываете порт, а все запущенные службы или приложения на вашем сервере могут иметь доступ к внешней сети.
+Политики брандмауэра UFW находится в файле /etc/default/ufw.
+Изменим след строку: - IPV6=yes
++ IPV6=no
+
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+Первое правило запрещает все входящие подключения, второе разрешает исходящие.
+
+Как только вы включите брандмауэр UFW, он будет блокировать все входящие подключения, и если вы попробуете подключится к своему серверу через SSH, то это у вас не получится.
+sudo ufw allow ssh
+Если вы используете пользовательский SSH-порт (например, порт 2222), вам необходимо открыть этот порт на брандмауэре UFW, используя следующую команду.
+ sudo ufw allow 2222/tcp
+Вы также можете открыть определенный порт в брандмауэре, чтобы разрешить подключение через него к определенному сервису. Например, если вам необходимо настроить веб-сервер, который по умолчанию прослушивает порт 80 (HTTP) и 443 (HTTPS).
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+apt-get install nmap
+https://habr.com/ru/post/88064/
+https://habr.com/ru/post/131433/
+nmap - Nmap это сокращение от “network mapper”, сам nmap это набор инструментов для сканирования сети. Он может быть использован для проверки безопасности, просто для определения сервисов запущенных на узле, для идентификации ОС и приложений, определения типа фаерволла используемого на сканируемом узле.
+Чтобы проверить порты - nmap:
+        • nmap (your ip) -p 1-65535
+
+6. Вы должны установить защиту от дудосеров (Denial Of Service Attack) на открытые
+порты вашей VM.
+
+https://itstuff.info/web/install-and-configure-fail2ban/#filters_and_jails
+https://vps.ua/wiki/configuring-fail2ban/#a-3
+
+fail2ban
+Fail2Ban может уменьшить частоту попыток неправильной аутентификации, несанкционированного доступа к службам сервера или слабой DOS атаки
+
+Основное ее предназначение — защита хоста от несанкционированного доступа, что возможно благодаря тщательному отслеживанию сетевой активности на основных портах и чтению журналов записей (лог-файлов). Программа особенно эффективна против так называемых brute-force атак, поскольку она нейтрализует атакующего таким образом, что все пакеты, отправленные с устройства, IP-адрес которого по той или иной причине попал в черный список, отбрасываются. Блокировка настраивается путем внесения изменений в правила iptables.
+
+sudo apt-get install fail2ban
+
+Для того, чтобы установленное программное обеспечение работало должным образом, вам необходимо внести поправки в конфигурационный файл. По умолчанию таковым является /etc/fail2ban/jail.conf.
+Однако разработчики крайне не рекомендуют редактировать его напрямую, чтобы избежать осложнений при работе с сервером. Поэтому создайте локальную копию данного файла командой:
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+Далее вам нужно будет выполнять редактирование только /etc/fail2ban/jail.local. Он будет подключен системой автоматически и имеет высший приоритет при исполнении.
+
+bantime — данный параметр означает время в секундах, в течение которого подозрительный IP будет заблокирован. Изначально его значение составляет 10 минут.
+ignoreip — значения этого параметра говорят о том, какие IP-адреса блокироваться не будут вовсе. Если вы хотите, чтобы Fail2ban игнорировал при проверке несколько IP-адресов, их необходимо указать в значении ignoreip через пробел.
+findtime — определяет промежуток времени в секундах, в течение которого программой будет определяться наличие подозрительной активности.
+maxretry — допустимое число неуспешных попыток получения доступа к серверу. При превышении указанного значения IP попадает в бан.
+
+После редактирования jail.local обязательно сделайте перезапуск Fail2ban командами:
+sudo service fail2ban restart
+
+action.d — содержит файлы с настройками действий которые может выполнить программа при обнаружении вредоносной активности;
+filter.d — хранит файлы фильтров по которым определяется вредоносная активность.
+
+destemail — если Вы хотите получать на почту уведомления от программы тут указывается Ваш email. Для отправки почты по умолчанию используется sendmail
+
+http://coldit.ru/?p=387
+Добавлем в конец [http] файла /etc/fail2ban/jail.local:
+[http-query-ddos] - секция кода с наименованием фильтра
+enabled = true - активен или не активен данный фильтр
+port = http,https - обозначение портов
+filter = http-query-ddos - наименование фильтра (создадим позже) в директории filter.d
+logpath = /var/log/nginx/access.log - лог-файл для анализа
+maxretry = 10 - максимальное количество зафиксированных попыток лог-файле
+findtime = 60 - период времени, в течение которого будет производиться проверка maxretry (значение выше) в сек.
+bantime = 31536000 - время в бана (в сек. 31536000 - 1 год)
+action = iptables[name=HTTP, port=http, protocol=tcp] - действие при выявлении
+
+[sshd]
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+maxretry = 3
+bantime = 600
+
+https://vps.ua/wiki/configuring-fail2ban/#a-3
+[sshd-ddos]
+# This jail corresponds to the standard configuration in Fail2ban.
+# The mail-whois action send a notification e-mail with a whois request
+# in the body.
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+maxretry = 2
+
+Для хранения больших списков заблокированных IP-адресов можно использовать комбинацию Netfilter/Iptables и IPsets. Чтобы настроить работу Fai2ban таким образом, активируйте раздел [ssh-iptables-ipset4]:
+[ssh-iptables-ipset4]
+enabled = true
+port 	= ssh
+filter = sshd
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+logpath = /var/log/auth.log
+findtime = 300
+maxretry = 3
+bantime = 600
+
+ignoreip = 127.0.0.1/8 192.168.56.2/30
+
+в директории /etc/fail2ban/filter.d создаем файл sudo vi  http-query-ddos.conf. Содержимое файла:
+# Fail2Ban configuration file
+#
+# Author: http://www.go2linux.org
+#
+[Definition]
+
+# Option: failregex
+# Note: This regex will match any GET entry in your logs, so basically all valid and not valid entries are a match.
+# You should set up in the jail.conf file, the maxretry and findtime carefully in order to avoid false positives.
+
+failregex = ^<HOST> -.*"(GET|POST|CONNECT)
+
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+#
+ignoreregex =
+Самой главной строкой в этом файле является переменная с регулярным выражение failregex = ^<HOST> -.*»(GET|POST|CONNECT), где сказано, что нужно из лог файла следить за всеми HOST (ip-адреса) с запросами GET|POST|CONNECT, то есть, соединив правило из файла jail.conf и данный файл, программа будет искать следующую логику:
+Если в файле access.log появился запрос GET|POST|CONNECT и HOST инициировавший данный запрос, сделал это более чем 10 раз в 60 секунд — то заблокировать его.
+
+/var/log/fail2ban.log
+https://itproffi.ru/ustanovka-i-nastrojka-fail2ban-zashhita-ssh-servera/
+/var/run/fail2ban/fail2ban.sock
+
+ sudo /etc/init.d/fail2ban restart - перезапустить
+
+sudo cat /etc/fail2ban/filter.d/http-query-ddos.conf
+
+НЕ ЗАБЫТЬ СКАЧАТЬ NGNIX!!!!!!!!!!!!!!!!!!!!!
+
+7. Вы должны защитить открытые порты VM от сканирования.
+portsentry
+http://www.smeegul.kiev.ua/portsentry.html
+
+sudo apt-get install portsentry
+
+Изменяем файл /etc/default/portsentry:
+TCP_MODE="atcp" - Portsentry прослушивает все неиспользуемые TCP-порты ниже ADVANCED_PORTS_TCP
+UDP_MODE="audp" - Portsentry прослушивает все неиспользуемые UDP-порты ниже ADVANCED_PORTS_UDP
+
+ADVANCED_PORTS_TCP, ADVANCED_PORTS_UDP
+Значение этих опций определяет верхнюю границу множества TCP-портов, которые проверяются Portsentry при работе в режиме Advanced Stealth Scan Detection Mode. Нижней границей является 1, т.е. при значении ADVANCED_PORTS_TCP равное 1024 проверяется подключение к любому порту в промежутке от 1 до 1024.
+
+Затем /etc/portsentry/portsentry.conf
+BLOCK_UDP="1"
+BLOCK_TCP="1"
+Раскомментировать: KILL_ROUTE="/sbin/iptables -I INPUT -s $TARGET$ -j DROP"
+Закоментить: KILL_ROUTE="/sbin/route add -host $TARGET$ reject" - эта строка единственная незакоменченая
+Закоментить: KILL_HOSTS_DENY="ALL: $TARGET$ : DENY
+В /etc/portsentry/portsentry.ignore.static добавить:
+ 192.168.58.53/255.255.255.252 ????????
+Перезапустить: sudo service portsentry restart
+В системных логах (/var/log/syslog) должно появится:
+debian portsentry[xxxx]: adminalert: PortSentry is now active and listening.
+
+
+nmap 192.168.56.2 - проверить
+https://codeby.net/blogs/slowloris-dos-instrument-s-nizkoj-propusknoj-sposobnostyu/
+Проверить защиту от DDOS атак
+На другой машине поменять ip и запустить
+git clone https://github.com/gkbrk/slowloris
+cd slowloris
+python3 slowloris.py 192.168.56.2
+
+Проверить что идет атака на своем сервере - netstat -na | grep :80 | wc -l
+число коннектов на 80 порт
+
+8. Остановить сервисы, которые вам не нужны для этого проекта. 
+sudo service --status-all - проверка
+sudo systemctl disable applciation - убрать сервис из автозагрузки
+service application stop - отключение сервиса
+остановим: dbus,kmod,procps, rsyslog, udex
+9. Написать скрипт, который обновляет пакеты, логирует обновления в файл
+/var/log/update_script.log. Создайте отложенную задачу, запускающую скрипт раз в
+неделю в 4 часа ночи и каждый раз, когда машина будет перезагружена.
+
+
+делаем это через root-a
+
+Для настройки времени, даты и интервала когда нужно выполнять задание используется специальный синтаксис файла cron и специальная команда. Конечно, вы всегда можете отредактировать файл /etc/crontab, но этого делать не рекомендуется. Вместо этого, есть команда crontab:
+crontab -e
+
+crontab -l - вывести конфигурации crontab
+
+Создаем скрипт для обновления ~/scripts/update_script.sh
+#!/bin/bash
+echo "!!!!!!!START OF UPDATE!!!!!!!!!" >> /var/log/update_script.log
+echo "Update date:" >> /var/log/update_script.log
+date >> /var/log/update_script.log
+echo  >> /var/log/update_script.log         
+sudo apt-get update -y && sudo apt-get upgrade -y
+grep upgrade /var/log/dpkg.log >> /var/log/update_script.log
+echo "!!!!!!The END!!!!!!!" >> /var/log/update_script.log
+
+suhttps://devacademy.ru/article/15-otlichnykh-primierov-dlia-sozdaniia-cron-zadach-v-linux/
+
+sudo service cron status
+
+sudo vi /etc/crontab:
+0 4 * * 1 root sh ~/scripts/update_script.sh
+@reboot root sh ~/scripts/update_script.sh
+0 0 * * * root sh ~/scripts/cron_ch.sh
+
+10. Напишите скрипт, который будет мониторить изменение файла /etc/crontab и
+отправлять емейл руту, если файл будет изменен. Он должен запускаться каждый день
+в полночь.
+
+Отправка писем происходит через smtp
+Настройка smtp
+http://itautsors.ru/ssmtp-nastroyka-otpravki-pochty-s-ubuntudebianlinux
+www.linuxjournal.su/ssmtp-простейшая-замена-sendmail-для-отправки-по/   - вот тут понятнее
+
+echo "Это тестовое письмо из консоли" | ssmtp -v -s адрескудаотправляем@domain.com
+
+
+создадимм копию файла кронтаб cp /etc/crontab ~/scripts/tmp
+#!/bin/bash
+
+cp /etc/crontab ~/scripts/new
+DIFF=$(diff ~/scripts/new ~/scripts/tmp)
+if [ "$DIFF" != "" ]; then
+   echo "Cron modified!!!" | ssmtp -v -s root
+   rm -rf ~/scripts/tmp
+   cp ~/scripts/new ~/scripts/tmp
+fi
+exit 0
+
+
+11. Вы должны создать сервер, который ДОЛЖЕН быть доступен по IP адресу VM или хосту
+(например init.login.com). Вы можете выбирать между Nginx и Apache. Вы должны установить
+самоподписанный SSL на всех ваших сервисах.
+
+sudo mkdir /etc/nginx/ssl - директория для ssl
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt - создание ключа и сертификата при помощи следующей команды
+
+	 •		 openssl: базовый инструмент командной строки для создания и управления сертификатами, ключами и другими файлами OpenSSL.
+	 •		 req: эта подкоманда указывает, что на данном этапе нужно использовать запрос на подпись сертификата X.509 (CSR). X.509 – это стандарт инфраструктуры открытого ключа, которого придерживаются SSL и TLS при управлении ключами и сертификатами. То есть, данная команда позволяет создать новый сертификат X.509.
+	 •		 —x509: данная опция вносит поправку в предыдущую субкоманду, сообщая утилите о том, что вместо запроса на подписание сертификата необходимо создать самоподписанный сертификат.
+	 •		 —nodes: говорит OpenSSL пропустить опцию защиты сертификата парольной фразой. Нужно, чтобы при запуске сервер Nginx имел возможность читать файл без вмешательства пользователя. Установив пароль, придется вводить его после каждой перезагрузки.
+	 •		 —days 365: эта опция устанавливает срок действия сертификата (как видите, в данном случае сертификат действителен в течение года).
+	 •		 —newkey rsa:2048: эта опция позволяет одновременно создать новый сертификат и новый ключ. Поскольку ключ, необходимый для подписания сертификата, не был создан ранее, нужно создать его вместе с сертификатом. Данная опция создаст ключ RSA на 2048 бит.
+	 •		 —keyout: эта опция сообщает OpenSSL, куда поместить сгенерированный файл ключа.
+	 •		 —out: сообщает OpenSSL, куда поместить созданный сертификат.
+
+Country Name (2 letter code) [AU]:RU
+State or Province Name (full name) [Some-State]:Moscow
+Locality Name (eg, city) []:Moscow
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:21School
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:192.168.56.2
+Email Address []:email
+
+Настройка Nginx для поддержки SSL
+vim /etc/nginx/sites-available/default
+Добавление строк в конфиг
+listen 443 ssl;
+ssl_certificate /etc/nginx/ssl/nginx.crt;
+ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+.CRT - файл сертификата вашего веб-сайта.
+
+sudo service nginx restart - перезагрузка nginx
+
+https://www.8host.com/blog/ustanovka-nginx-v-debian-9/
+/var/www/htm: этот каталог содержит текущий контент сайта. По умолчанию в нём находится только стандартная посадочная страница. Этот каталог можно изменить в конфигурационном файле Nginx.
+/etc/nginx: каталог настроек nginx, в котором хранятся все конфигурационные файлы
+/etc/nginx/nginx.conf: главный конфигурационный файл Nginx, содержащий глобальные настройки веб-сервера.
+/etc/nginx/sites-available/: каталог, хранящий настроенные блоки server (виртуальные хосты) каждого отдельного сайта. Nginx не будет использовать эти блоки, пока ссылка на них не появится в каталоге sites-enabled 
+Как правило, этот каталог используется для настройки виртуальных хостов.
+/etc/nginx/sites-enabled/: каталог, хранящий включенные блоки server. Чтобы включить блок, нужно создать символьную ссылку на файл, хранящийся в каталоге sites-available.
+/etc/nginx/snippets: этот каталог хранит фрагменты настроек, которые можно включить в конфигурацию Nginx. Как правило, в качестве фрагментов добавляют потенциально повторяемые сегменты конфигурации.
+/var/log/nginx/access.log: этот лог регистрирует все запросы, полученные веб-сервером Nginx (если не настроено другое поведение).
+/var/log/nginx/error.log: этот лог хранит все сообщения об ошибках Nginx.
+
+
+https://devacademy.ru/article/nginx-ubuntu-1404/ - как тут
+Настройка виртуального хоста:
+sudo mkdir -p /var/www/example.com/html
+Флаг -р указывает оболочке, чтобы она создавала новые каталоги если их не существует в указанном пути. Теперь передадим права на этот каталог обычному пользователю. Воспользуемся переменной окружения $USER, чтобы не вводить имя своего аккаунта. После этих действий мы сможем создавать в каталоге /var/www/ файлы, а посетители сайта - нет.
+sudo chmod -R 755 /var/www
+sudo vi /var/www/example.com/html/index.html - создаем страницу
+ скопируем файл настройки default:
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/example.com
+
+https://www.robpeck.com/2010/10/google-chrome-mac-os-x-and-self-signed-ssl-certificates/#.XXOuYJMzZBw - 
+В итоге сайт открываем через сафари, потому что хром всегда ругается на самоподписанные сертификаты. Чтобы это исправить надо делать как в ссылке выше, но для этого нужны права администратора.
+
+ДЕПЛОЙМЕНТ ПАРТ!!!!!!!!!!!
+https://habr.com/ru/post/305400/
+https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+
+
+http://prgssr.ru/development/razvertyvanie-s-github-na-server.html
+
+изменяем на раб столе код сайта -> пушим на гит -> git push proddys master
+git remote add prod ssh://emaveric@912.168.56.2:1111/home/emaveric/roger-skyline-1.git

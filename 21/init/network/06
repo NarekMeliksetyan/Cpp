@@ -1,0 +1,12 @@
+echo "Файл настроек /etc/resolv.conf содержит информацию,"
+echo "которая позволяет компьютеру преобразовывать"
+echo "буквенно-цифровые доменные имена в цифровые IP адреса:"
+cat /etc/resolv.conf
+
+echo ""
+echo "Опция nameserver указывает на IP адрес DNS сервера:"
+cat /etc/resolv.conf | grep "nameserver"
+
+echo ""
+echo "Оставляем только адреса:"
+cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}'
