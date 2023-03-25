@@ -3,14 +3,22 @@
 int main()
 {
     unsigned steps = 100;
-    int *ptr = 0;
+
+    int start = 100;
+    int *ptr = &start;
 
     while (steps--)
     {
+        printf("%p: ", ptr);
         if (*ptr)
         {
-            printf("%p: %d\n", ptr, *ptr);
+            printf("%d\n", *ptr);
         }
+        else
+        {
+            printf("empty\n");
+        }
+        ptr++;
     }
     
     return 0;
